@@ -163,13 +163,13 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: GestureDetector(
                   onTap: () => {
-                    if (_usernameController.text == "admin" &&
+                    if (_usernameController.text == "0773812106" &&
                         _passwordController.text == "admin")
                       {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomePage(username: 'test',)))
+                                builder: (context) => const HomePage(username: 'Mufasa',)))
                       }
                     else
                       {

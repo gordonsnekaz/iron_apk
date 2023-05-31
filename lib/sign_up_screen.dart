@@ -1,6 +1,12 @@
 // ignore_for_file: sized_box_for_whitespace
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:ironapk/api_connection/api_connection.dart';
+import 'package:ironapk/user/model/user.dart';
 
 import 'login_screen.dart';
 
@@ -15,7 +21,69 @@ class _SignUp extends State<SignUp> {
   //variables
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _newPasswordController = TextEditingController();
+  final _addressController = TextEditingController();
+
+  Future validateUserName() async {
+    try{
+      var response = await http.post(
+        Uri.parse(API.validateEmail),
+        body: {
+          'user_number': _usernameController.text,
+        }
+      );
+
+      if(response.statusCode == 200){ //connection is successfull
+        var resonseBody = jsonDecode(response.body);
+
+        if(resonseBody['emailFound']){
+          Fluttertoast.showToast(msg: "Mobile number in use, try another mobile number!!!");
+        }else{
+          //save new user
+          saveUserRecord();
+        }
+      }
+    }catch(e){
+      Fluttertoast.showToast(msg: "Error when validating");
+    }
+  }
+
+  Future testDb() async{
+    var result = await http.post(
+        Uri.parse("http://192.168.43.175/IronApk/connection.php"),
+         
+    );
+    print(result.body);
+    Fluttertoast.showToast(msg: result.body);
+  }
+
+  Future saveUserRecord() async{
+    User userModel = User(
+      _addressController.text.trim(), 
+      _usernameController.text.trim(), 
+      _passwordController.text.trim(),
+    );
+
+    try{
+      var response = await http.post(
+        Uri.parse(API.signUp),
+        body: {
+          userModel.toJson()
+        }
+      );
+
+      if(response.statusCode == 200){
+        var responseBody = jsonDecode(response.body);
+
+        if(responseBody['success']){
+          Fluttertoast.showToast(msg: "Congrulations you have sign up successfully!!!");
+        }else{
+          Fluttertoast.showToast(msg: "Error when signing");
+        }
+      }
+    }catch(e){
+      Fluttertoast.showToast(msg: "Failed to save record");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +203,7 @@ class _SignUp extends State<SignUp> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: TextField(
-                      controller: _newPasswordController,
+                      controller: _addressController,
                       decoration: const InputDecoration(
                           fillColor: Color(0xffffffff),
                           border: InputBorder.none,

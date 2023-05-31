@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
   LandingPage({Key? key}) : super(key: key);
 
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
   final headings = <String>[
     'T-Shirt',
     'Skirt',
@@ -12,14 +18,60 @@ class LandingPage extends StatelessWidget {
     'Blazer',
   ];
 
-  final prices = <String>[
-    '0.10',
-    '0.10',
-    '0.20',
-    '0.10',
-    '0.30',
+  final prices = <double>[
+    0.10,
+    0.10,
+    0.20,
+    0.10,
+    0.30,
   ];
-  
+
+  final imagesStrings = <String>[
+    'assets/t-shirt.png',
+    'assets/skirt.png',
+    'assets/trousers.jpg',
+    'assets/short.png',
+    'assets/blazer.jpg'
+  ];
+
+  final items = <int>[
+    0,
+    0,
+    0,
+    0,
+    0
+  ];
+
+  final totals = <double>[
+    0.00,
+    0.00,
+    0.00,
+    0.00,
+    0.00
+  ];
+
+  double sum = 0.00;
+
+  Future placeOrder() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            backgroundColor: Color(0xfff5f8ff),
+            title: const Text(
+              'Order successfully placed',
+              style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff009818)),
+            ),
+            content: Text(
+              "${headings[0]} - ${items[0]}\n ${headings[1]} - ${items[1]}\n ${headings[2]} - ${items[2]}\n ${headings[3]} - ${items[3]}\n ${headings[4]} - ${items[4]}\n\n\n Total: \$${sum.toStringAsFixed(2)}",
+              style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff828282)),
+            ),
+          ));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,16 +117,16 @@ class LandingPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Total',
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xff4A4A4A)),
                   ),
                   Text(
-                    '\$ ${prices[0]}',
-                    style: GoogleFonts.roboto(
+                    '\$ ${sum.toStringAsFixed(2)}',
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: const Color(0xffDE0000),
@@ -90,7 +142,8 @@ class LandingPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: GestureDetector(
                 onTap: () => {
-                  
+                  //place order
+                  placeOrder()
                 },
                 child: Container(
                   padding: const EdgeInsets.all(15),
@@ -115,11 +168,11 @@ class LandingPage extends StatelessWidget {
             ),
             Expanded(
               child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 15.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   itemCount: headings.length,
                   itemBuilder: (context, index) {
                     return Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.white,
                           border: Border(
                               bottom:
@@ -149,9 +202,9 @@ class LandingPage extends StatelessWidget {
                                         image: DecorationImage(
                                             fit: BoxFit.fitHeight,
                                             image: AssetImage(
-                                                'assets/skirt.png'))),
+                                                imagesStrings[index]))),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 15,
                                   ),
                                   Column(
@@ -160,7 +213,7 @@ class LandingPage extends StatelessWidget {
                                     children: [
                                       Text(
                                         headings[index],
-                                        style: GoogleFonts.roboto(
+                                        style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                             color: const Color(0xff4A4A4A)),
@@ -169,8 +222,8 @@ class LandingPage extends StatelessWidget {
                                         height: 5,
                                       ),
                                       Text(
-                                        prices[index],
-                                        style: GoogleFonts.roboto(
+                                        '\$${prices[index].toStringAsFixed(2)}',
+                                        style: const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500,
                                             color: Color(0xffDE0000)),
@@ -181,12 +234,23 @@ class LandingPage extends StatelessWidget {
                               ),
                               Row(
                                 children: [
-                                  const Icon(
-                                    Icons.remove,
-                                    color: Color(0xff4A4A4A),
-                                    size: 16,
+                                  GestureDetector(
+                                    onTap: () => {
+                                      if(items[index] > 0){
+                                        setState((){
+                                          totals[index] = prices[index] * (items[index] - 1);
+                                          items[index] = items[index] - 1;
+                                          sum = totals.fold(0, (a, b) => a + b);
+                                        })
+                                      }
+                                    },
+                                    child: const Icon(
+                                      Icons.remove,
+                                      color: Color(0xff4A4A4A),
+                                      size: 16,
+                                    ),
                                   ),
-                                  SizedBox(width: 4,),
+                                  const SizedBox(width: 4,),
                                   Container(
                                     decoration: BoxDecoration(
                                       color: Colors.white,
@@ -199,15 +263,15 @@ class LandingPage extends StatelessWidget {
                                     child: Row(
                                       children: [
                                         Text(
-                                          '01   -   ',
-                                          style: GoogleFonts.roboto(
+                                          '${items[index]}   -   ',
+                                          style: const TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
                                             color: Color(0xff4A4A4A)),
                                         ),
                                         Text(
-                                          '\$ ${prices[index]*1}',
-                                          style: GoogleFonts.roboto(
+                                          '\$ ${totals[index].toStringAsFixed(2)}',
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w500,
                                             color: Color(0xff009818)),
@@ -215,11 +279,22 @@ class LandingPage extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width: 4,),
-                                  const Icon(
-                                    Icons.add,
-                                    color: Color(0xff4A4A4A),
-                                    size: 16,
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => {
+                                      setState((){
+                                        totals[index] = prices[index] * (items[index] + 1);
+                                        items[index] = items[index] + 1;
+                                        sum = totals.fold(0, (a, b) => a + b);
+                                      })
+                                    },
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Color(0xff4A4A4A),
+                                      size: 16,
+                                    ),
                                   ),
                                 ],
                               ),

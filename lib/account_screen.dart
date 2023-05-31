@@ -54,7 +54,7 @@ class _AccountPageState extends State<AccountPage> {
                       borderRadius: BorderRadius.circular(30.0),
                     ),
                     child: const Text(
-                      "MGM",
+                      "Mufasa",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -65,7 +65,7 @@ class _AccountPageState extends State<AccountPage> {
                     height: 15,
                   ),
                   const Text(
-                    "@gordons",
+                    "@mufasa",
                     style: TextStyle(
                       color: Color(0xff009818),
                       fontSize: 15,
@@ -107,7 +107,7 @@ class _AccountPageState extends State<AccountPage> {
                     decoration: const InputDecoration(
                         fillColor: Color(0xffffffff),
                         border: InputBorder.none,
-                        hintText: "@gordons"),
+                        hintText: "@mufasa"),
                   ),
                 ),
               ),
@@ -128,6 +128,26 @@ class _AccountPageState extends State<AccountPage> {
                         fillColor: Color(0xffffffff),
                         border: InputBorder.none,
                         hintText: "**********"),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xffffffff),
+                  border: Border.all(color: Color(0xff009818)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20.0),
+                  child: TextField(
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                        fillColor: Color(0xffffffff),
+                        border: InputBorder.none,
+                        hintText: "Hostel D G12"),
                   ),
                 ),
               ),
